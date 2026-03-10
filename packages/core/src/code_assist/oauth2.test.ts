@@ -480,6 +480,7 @@ describe('oauth2', () => {
       expect(fs.existsSync(googleAccountPath)).toBe(true);
       if (fs.existsSync(googleAccountPath)) {
         const cachedGoogleAccount = fs.readFileSync(googleAccountPath, 'utf-8');
+        // eslint-disable-next-line vitest/no-conditional-expect
         expect(JSON.parse(cachedGoogleAccount)).toEqual({
           active: 'test-user-code-account@gmail.com',
           old: [],
@@ -1349,7 +1350,7 @@ describe('oauth2', () => {
         let dataHandler: ((data: Buffer) => void) | undefined;
         await vi.waitFor(() => {
           const dataCall = stdinOnSpy.mock.calls.find(
-            (call: [string, ...unknown[]]) => call[0] === 'data',
+            (call: [string | symbol, ...unknown[]]) => call[0] === 'data',
           );
           dataHandler = dataCall?.[1] as ((data: Buffer) => void) | undefined;
           if (!dataHandler) throw new Error('stdin handler not registered yet');
@@ -1486,9 +1487,8 @@ describe('oauth2', () => {
     });
 
     it('should save credentials using OAuthCredentialStorage during web login', async () => {
-      const { OAuthCredentialStorage } = await import(
-        './oauth-credential-storage.js'
-      );
+      const { OAuthCredentialStorage } =
+        await import('./oauth-credential-storage.js');
       const mockAuthUrl = 'https://example.com/auth';
       const mockCode = 'test-code';
       const mockState = 'test-state';
@@ -1588,9 +1588,8 @@ describe('oauth2', () => {
     });
 
     it('should load credentials using OAuthCredentialStorage and not from file', async () => {
-      const { OAuthCredentialStorage } = await import(
-        './oauth-credential-storage.js'
-      );
+      const { OAuthCredentialStorage } =
+        await import('./oauth-credential-storage.js');
       const cachedCreds = { refresh_token: 'cached-encrypted-token' };
       vi.mocked(OAuthCredentialStorage.loadCredentials).mockResolvedValue(
         cachedCreds,
@@ -1626,9 +1625,8 @@ describe('oauth2', () => {
     });
 
     it('should clear credentials using OAuthCredentialStorage', async () => {
-      const { OAuthCredentialStorage } = await import(
-        './oauth-credential-storage.js'
-      );
+      const { OAuthCredentialStorage } =
+        await import('./oauth-credential-storage.js');
 
       // Create a dummy unencrypted credential file. It should not be deleted.
       const credsPath = path.join(tempHomeDir, GEMINI_DIR, 'oauth_creds.json');

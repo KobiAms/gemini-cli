@@ -110,10 +110,7 @@ export const ToolGroupMessage: React.FC<ToolGroupMessageProps> = ({
     () =>
       toolCalls.filter((t) => {
         const displayStatus = mapCoreStatusToDisplayStatus(t.status);
-        return (
-          displayStatus !== ToolCallStatus.Pending &&
-          displayStatus !== ToolCallStatus.Confirming
-        );
+        return displayStatus !== ToolCallStatus.Confirming;
       }),
 
     [toolCalls],

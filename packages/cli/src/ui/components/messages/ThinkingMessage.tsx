@@ -23,20 +23,34 @@ function normalizeThoughtLines(thought: ThoughtSummary): string[] {
   const subject = normalizeEscapedNewlines(thought.subject).trim();
   const description = normalizeEscapedNewlines(thought.description).trim();
 
-  if (!subject && !description) {
+  // Filter out excessive "progress dots" or empty segments that can occur during streaming
+  const sanitize = (text: string) => {
+    // If the text is just a series of dots or whitespace, treat it as empty
+    if (/^[.\s]+$/.test(text)) {
+      return '';
+    }
+    return text;
+  };
+
+  const sanitizedSubject = sanitize(subject);
+  const sanitizedDescription = sanitize(description);
+
+  if (!sanitizedSubject && !sanitizedDescription) {
     return [];
   }
 
-  if (!subject) {
-    return description.split('\n');
+  if (!sanitizedSubject) {
+    return sanitizedDescription.split('\n').filter((l) => l.trim().length > 0);
   }
 
-  if (!description) {
-    return [subject];
+  if (!sanitizedDescription) {
+    return [sanitizedSubject];
   }
 
-  const bodyLines = description.split('\n');
-  return [subject, ...bodyLines];
+  const bodyLines = sanitizedDescription
+    .split('\n')
+    .filter((l) => l.trim().length > 0);
+  return [sanitizedSubject, ...bodyLines];
 }
 
 /**

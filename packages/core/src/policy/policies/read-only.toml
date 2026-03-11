@@ -56,3 +56,9 @@ priority = 50
 toolName = ["codebase_investigator", "cli_help"]
 decision = "allow"
 priority = 50
+
+[[rule]]
+toolName = "run_shell_command"
+decision = "allow"
+priority = 50
+argsPattern = "^(ls|ls -F)(\\s|$)"
